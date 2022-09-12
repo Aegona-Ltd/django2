@@ -1,0 +1,6 @@
+__pycache__/
+.env
+celerybeat-schedule
+docker-compose.yml
+/.docker
+/static/uploads/images/*

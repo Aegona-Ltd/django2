@@ -1,0 +1,58 @@
+{% load static %}
+<div id="sidebar" class="active">
+    <div class="sidebar-wrapper active">
+        <div class="sidebar-header">
+            <div class="d-flex justify-content-between">
+                <div class="logo">
+                    <a href="index.html"><img src="{% static 'cms-html/assets/images/logo/logo.png' %}" alt="Logo"
+                            srcset="" /></a>
+                </div>
+                <div class="toggler">
+                    <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar-menu">
+            <ul class="menu">
+                <li class="sidebar-title">Menu</li>
+
+                <li class="sidebar-item {% if request.resolver_match.url_name == "dashboard" %}active{% endif %}">
+                    <a href="{% url 'cms:dashboard' %}" class="sidebar-link">
+                        <i class="bi bi-grid-fill"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item {% if "admin." in request.resolver_match.url_name  %}active{% endif %}">
+                    <a href="{% url 'cms:admin.index' %}" class="sidebar-link">
+                        <i class="bi bi-grid-fill"></i>
+                        <span>Admin manager</span>
+                    </a>
+                </li>
+
+                <li
+                    class="sidebar-item {% if "groupPermission." in request.resolver_match.url_name  %}active{% endif %}">
+                    <a href="{% url 'cms:groupPermission.index' %}" class="sidebar-link">
+                        <i class="bi bi-grid-fill"></i>
+                        <span>Group permission</span>
+                    </a>
+                </li>
+
+                {% comment %} <li class="sidebar-item has-sub">
+                    <a href="#" class="sidebar-link">
+                        <i class="bi bi-stack"></i>
+                        <span>Components</span>
+                    </a>
+                    <ul class="submenu">
+                        <li class="submenu-item">
+                            <a href="component-alert.html">Alert</a>
+                        </li>
+                    </ul>
+                </li> {% endcomment %}
+            </ul>
+        </div>
+        <button class="sidebar-toggler btn x">
+            <i data-feather="x"></i>
+        </button>
+    </div>
+</div>
