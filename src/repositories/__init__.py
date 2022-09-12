@@ -1,6 +1,3 @@
-import importlib
 
-
-def repository(repo):
-    module = importlib.import_module("src.repositories." + repo)
-    return module.Repository()
+from .UserClientRepository import UserClientRepository
+from .ContactRepository import ContactRepository

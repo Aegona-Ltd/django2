@@ -1,5 +1,5 @@
 from django.urls import path
-from ..views.cms import dashboard, account, admin,groupPermission
+from src.views.cms import dashboard, account, admin, groupPermission,contact
 
 app_name = "cms"
 urlpatterns = [
@@ -24,4 +24,5 @@ urlpatterns = [
     path(
         "group-permission/delete", groupPermission.delete, name="groupPermission.delete"
     ),
+    path("contact", contact.index, name="contact.index"),
 ]

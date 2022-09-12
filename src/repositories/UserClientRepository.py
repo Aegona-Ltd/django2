@@ -2,6 +2,6 @@ from .BaseRepository import BaseRepository
 from src.models import UserClient
 
 
-class Repository(BaseRepository):
+class UserClientRepository(BaseRepository):
     def __init__(self):
         self.model = UserClient
