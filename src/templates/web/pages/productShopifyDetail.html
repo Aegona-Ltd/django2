@@ -48,6 +48,7 @@
                 <td>Title</td>
                 <td>Weight</td>
                 <td>Price</td>
+                <td></td>
             </tr>
         </thead>
         <tbody>
@@ -56,12 +57,48 @@
                 <td>{{variant.title}}</td>
                 <td>{{variant.grams}} g</td>
                 <td>{{variant.price}} $</td>
+                <td><button class="js-addToCart" data-id="{{variant.id}}">Add to cart</button></td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-
 </div>
 <input type="hidden" id="js-data" data-product_id="{{product.id}}"
-    data-url_add_to_cart="{% url 'web:productDetail.addToCart' %}">
+    data-url_add_to_cart="{% url 'web:productShopifyDetail.addToCart' %}">
+{% endblock %}
+{% block js %}
+<script>
+    $(document).on("click", ".js-addToCart", function () {
+        var formData = new FormData()
+
+        formData.append('csrfmiddlewaretoken', $('[name="csrfmiddlewaretoken"]').val() || "")
+        formData.append('variant_id', $(this).data("id") || "")
+
+        $.ajax({
+            url: $('#js-data').data("url_add_to_cart"),
+            data: formData,
+            processData: false,
+            contentType: false,
+            xhrFields: {
+                withCredentials: true
+            },
+            type: 'POST',
+            success: function (data) {
+                console.log(data.cart)
+                setCartQuantityProduct(data.cart)
+            },
+            error: function (data, textStatus, jqXHR) {
+                var errors = data.responseJSON.errors
+                console.log(errors)
+                var message = ""
+
+                for (const property in errors) {
+                    message += (property + ": " + errors[property][0] + "\r\n")
+                }
+
+                alert(message);
+            },
+        });
+    })
+</script>
 {% endblock %}
