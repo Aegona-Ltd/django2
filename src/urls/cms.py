@@ -6,7 +6,8 @@ from src.views.cms import (
     groupPermission,
     contact,
     productCategory,
-    product
+    product,
+    productShopify
 )
 
 app_name = "cms"
@@ -55,4 +56,7 @@ urlpatterns = [
         name="product.update",
     ),
     path("product/delete", product.delete, name="product.delete"),
+
+    path("product-shopify", productShopify.index, name="productShopify.index"),
+    path("product-shopify/sync", productShopify.sync, name="productShopify.sync"),
 ]

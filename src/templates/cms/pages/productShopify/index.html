@@ -1,0 +1,27 @@
+{% extends "cms/partials/layout.html" %} {% block content %}
+<h1>Product shopify</h1>
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">Index</h4>
+    </div>
+    <div class="card-header"><a href="{% url 'cms:productShopify.sync' %}">Sync</a></div>
+    <div class="card-body">
+        <table class="table table-striped" id="table1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for x in products %}
+                <tr>
+                    <td>{{x.id}}</td>
+                    <td>{{x.title}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

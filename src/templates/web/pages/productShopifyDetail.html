@@ -1,0 +1,67 @@
+{% extends "web/partials/layout.html" %}
+{% load helpers %}
+{% load static %}
+{% block css %}
+<style>
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 1vw;
+        min-height: 50vh;
+        padding: 5vw 20vw;
+        text-align: center
+    }
+
+    tr {
+        display: flex;
+        gap: 5vw;
+        width: 70vw;
+        margin-bottom: 2vw
+    }
+
+    td {
+        flex: 1
+    }
+
+    thead {
+        font-weight: bold
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div>
+        <img src="{% if product.image %}{{product.image}}{% else %}{% static "product.jpg" %}{% endif %}" alt=""
+            width="50%">
+    </div>
+    <h4>{{product.title}}</h4>
+    <div>{{product.body_html}}</div>
+    <div><b>Vendor:</b> {{product.vendor}}</div>
+    <div> <b>Type:</b> {{product.product_type}}</div>
+    <div> <b>Tags:</b> {{product.tags}}</div>
+    <h3>Variant:</h3>
+    <table>
+        <thead>
+            <tr>
+                <td>Title</td>
+                <td>Weight</td>
+                <td>Price</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for variant in product.productshopifyvariant_set.all %}
+            <tr>
+                <td>{{variant.title}}</td>
+                <td>{{variant.grams}} g</td>
+                <td>{{variant.price}} $</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+<input type="hidden" id="js-data" data-product_id="{{product.id}}"
+    data-url_add_to_cart="{% url 'web:productDetail.addToCart' %}">
+{% endblock %}

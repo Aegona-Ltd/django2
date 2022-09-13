@@ -26,6 +26,17 @@ class BaseRepository:
         object.save()
         return object
 
+    def updateOrCreate(self, *args, **kwargs):
+        object = self.model.objects.filter(*args).first()
+        if object:
+            for attr in kwargs.keys():
+                setattr(object, attr, kwargs.get(attr))
+            object.save()
+        else:
+            object = self.model(*args,**kwargs)
+            object.save()
+        return object
+
     def delete(self, **kwargs):
         try:
             object = self.model.objects.filter(**kwargs).first()

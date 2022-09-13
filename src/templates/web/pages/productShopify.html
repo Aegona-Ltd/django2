@@ -1,0 +1,73 @@
+{% extends "web/partials/layout.html" %}
+{% load helpers %}
+{% load static %}
+{% block css %}
+<style>
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 1vw;
+        min-height: 50vh;
+        padding: 5vw;
+    }
+
+    label {
+        display: block;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5vw;
+    }
+
+    input {
+        width: 20vw;
+        height: 2vw;
+    }
+
+    textarea {
+        width: 20vw;
+        height: 5vw;
+    }
+
+    button {
+        width: 20.4vw;
+        height: 2vw;
+    }
+
+    .list-product {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        gap: 3vw;
+    }
+
+    .product {
+        min-height: 10vw;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+        padding: 1vw;
+        text-decoration: none;
+        color: inherit;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="list-product">
+        {% for product in products %}
+        <a href="{% url 'web:productShopifyDetail' product.title|slug product.id %}" class="product">
+            <div>
+                <img src="{% if product.image %}{{product.image}}{% else %}{% static "product.jpg" %}{% endif %}"
+                    alt="" width="100%">
+            </div>
+            <h4>{{product.title}}</h4>
+            <div>{{product.productshopifyvariant_set.first.price}} $</div>
+
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

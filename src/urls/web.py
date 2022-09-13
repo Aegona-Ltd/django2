@@ -1,5 +1,5 @@
 from django.urls import path
-from src.views.web import home, productDetail, cart
+from src.views.web import home, productDetail, cart,productShopify,productShopifyDetail
 
 app_name = "web"
 urlpatterns = [
@@ -12,4 +12,7 @@ urlpatterns = [
     ),
     path("cart", cart.index, name="cart"),
     path("cart/remove-cart-item", cart.removeCartItem, name="cart.removeCartItem"),
+
+    path("product-shopify", productShopify.index, name="productShopify"),
+    path("product-shopify/<slug>-<id>", productShopifyDetail.index, name="productShopifyDetail"),
 ]

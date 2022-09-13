@@ -3,3 +3,7 @@ from .UserClientRepository import UserClientRepository
 from .ContactRepository import ContactRepository
 from .ProductCategoryRepository import ProductCategoryRepository
 from .ProductRepository import ProductRepository
+from .ProductShopifyRepository import ProductShopifyRepository
+from .ProductShopifyImageRepository import ProductShopifyImageRepository
+from .ProductShopifyOptionRepository import ProductShopifyOptionRepository
+from .ProductShopifyVariantRepository import ProductShopifyVariantRepository

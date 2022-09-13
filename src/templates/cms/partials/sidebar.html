@@ -43,6 +43,13 @@
                     </a>
                 </li>
 
+                <li class="sidebar-item {% if "productShopify." in request.resolver_match.url_name  %}active{% endif %}">
+                    <a href="{% url 'cms:productShopify.index' %}" class="sidebar-link">
+                        <i class="bi bi-grid-fill"></i>
+                        <span>Product shopify</span>
+                    </a>
+                </li>
+
                 <li class="sidebar-item {% if "admin." in request.resolver_match.url_name  %}active{% endif %}">
                     <a href="{% url 'cms:admin.index' %}" class="sidebar-link">
                         <i class="bi bi-grid-fill"></i>
