@@ -29,6 +29,20 @@
                     </a>
                 </li>
 
+                <li class="sidebar-item {% if "productCategory." in request.resolver_match.url_name  %}active{% endif %}">
+                    <a href="{% url 'cms:productCategory.index' %}" class="sidebar-link">
+                        <i class="bi bi-grid-fill"></i>
+                        <span>Product category</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item {% if "product." in request.resolver_match.url_name  %}active{% endif %}">
+                    <a href="{% url 'cms:product.index' %}" class="sidebar-link">
+                        <i class="bi bi-grid-fill"></i>
+                        <span>Product</span>
+                    </a>
+                </li>
+
                 <li class="sidebar-item {% if "admin." in request.resolver_match.url_name  %}active{% endif %}">
                     <a href="{% url 'cms:admin.index' %}" class="sidebar-link">
                         <i class="bi bi-grid-fill"></i>

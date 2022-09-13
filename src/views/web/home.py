@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from marshmallow import Schema, fields, ValidationError, INCLUDE, validate
-from src.repositories import ContactRepository
+from src.repositories import ContactRepository, ProductCategoryRepository
 
 # validation
 class ContactSchema(Schema):
@@ -31,8 +31,12 @@ def index(request):
 
         return JsonResponse({}, status=200)
 
+    productCategoryRepository = ProductCategoryRepository()
+    productCategories = (
+        productCategoryRepository.getAllActiveWithRelated()
+    )
     return render(
         request,
         "web/pages/home.html",
-        {},
+        {"productCategories": productCategories},
     )

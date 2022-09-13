@@ -1,0 +1,118 @@
+{% extends "web/partials/layout.html" %}
+{% load helpers %}
+{% load static %}
+{% block css %}
+<style>
+    .container {
+        min-height: 50vh;
+        padding: 5vw 20vw;
+    }
+
+    .row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 70vw;
+        margin-bottom: 1.5vw;
+    }
+
+    .row div {
+        flex: 1
+    }
+
+    .row:nth-child(1) {
+        font-weight: bold
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div>Sản phẩm</div>
+        <div>Đơn giá</div>
+        <div>Số lượng</div>
+        <div></div>
+    </div>
+    {% for item in cart %}
+    {% with item|getByIndex:"product" as product %}
+    <div class="row" id="product-{{product.id}}">
+        <div>
+            <div>
+                <img src="{% if product.image %}{% static "uploads/images/" %}{{product.image }}{% else %}{% static "product.jpg" %}{% endif %}"
+                    alt="" width="50%">
+            </div>
+            <div>{{product.name}}</div>
+        </div>
+        <div>{{product.price|formatCurrency}} VNĐ</div>
+        <div>{{item|getByIndex:"quantity"}}</div>
+        <div><button onclick="removeCartItem({{product.id}})">Xoá</button></div>
+    </div>
+    {% endwith %}
+    {% endfor %}
+</div>
+<input type="hidden" id="js-data" data-url_remove_cart_item="{% url "web:cart.removeCartItem" %}" >
+{% endblock %}
+{% block js %}
+<script>
+    function removeCartItem(productId){
+        var formData = new FormData()
+
+        formData.append('csrfmiddlewaretoken', $('[name="csrfmiddlewaretoken"]').val() || "")
+        formData.append('productId', productId || "")
+
+        $.ajax({
+            url: $('#js-data').data("url_remove_cart_item"),
+            data: formData,
+            processData: false,
+            contentType: false,
+            xhrFields: {
+                withCredentials: true
+            },
+            type: 'POST',
+            success: function (data) {
+                $("#product-" + productId).remove()
+                setCartQuantityProduct(data.cart)
+            },
+            error: function (data, textStatus, jqXHR) {
+                var errors = data.responseJSON
+                console.log(errors)
+            },
+        });
+    }
+</script>
+<script>
+    $(document).on("click", ".js-addToCart", function () {
+        var formData = new FormData()
+
+        formData.append('csrfmiddlewaretoken', $('[name="csrfmiddlewaretoken"]').val() || "")
+        formData.append('productId', $('#js-data').data("product_id") || "")
+
+        $.ajax({
+            url: $('#js-data').data("url_add_to_cart"),
+            data: formData,
+            processData: false,
+            contentType: false,
+            xhrFields: {
+                withCredentials: true
+            },
+            type: 'POST',
+            success: function (data) {
+                console.log(data.cart)
+                setCartQuantityProduct(data.cart)
+            },
+            error: function (data, textStatus, jqXHR) {
+                var errors = data.responseJSON.errors
+                console.log(errors)
+                var message = ""
+
+                for (const property in errors) {
+                    message += (property + ": " + errors[property][0] + "\r\n")
+                }
+
+                alert(message);
+            },
+        });
+    })
+</script>
+
+{% endblock %}

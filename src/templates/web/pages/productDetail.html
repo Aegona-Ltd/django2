@@ -1,0 +1,70 @@
+{% extends "web/partials/layout.html" %}
+{% load helpers %}
+{% load static %}
+{% block css %}
+<style>
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 1vw;
+        min-height: 50vh;
+        padding: 5vw 20vw;
+        text-align: center
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div>
+        <img src="{% if product.image %}{% static "uploads/images/" %}{{product.image }}{% else %}{% static "product.jpg" %}{% endif %}"
+            alt="" width="50%">
+    </div>
+    <h1>{{product.name}}</h1>
+    <p>{{product.description}}</p>
+    <p> <b>{{product.price | formatCurrency}} VNĐ</b> </p>
+    <div>
+        <button class="js-addToCart">Add to cart</button>
+    </div>
+</div>
+<input type="hidden" id="js-data" data-product_id="{{product.id}}"
+    data-url_add_to_cart="{% url 'web:productDetail.addToCart' %}">
+{% endblock %}
+{% block js %}
+<script>
+    $(document).on("click", ".js-addToCart", function () {
+        var formData = new FormData()
+
+        formData.append('csrfmiddlewaretoken', $('[name="csrfmiddlewaretoken"]').val() || "")
+        formData.append('productId', $('#js-data').data("product_id") || "")
+
+        $.ajax({
+            url: $('#js-data').data("url_add_to_cart"),
+            data: formData,
+            processData: false,
+            contentType: false,
+            xhrFields: {
+                withCredentials: true
+            },
+            type: 'POST',
+            success: function (data) {
+                console.log(data.cart)
+                setCartQuantityProduct(data.cart)
+            },
+            error: function (data, textStatus, jqXHR) {
+                var errors = data.responseJSON.errors
+                console.log(errors)
+                var message = ""
+
+                for (const property in errors) {
+                    message += (property + ": " + errors[property][0] + "\r\n")
+                }
+
+                alert(message);
+            },
+        });
+    })
+</script>
+
+{% endblock %}

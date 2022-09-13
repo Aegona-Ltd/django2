@@ -3,18 +3,25 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.contrib.auth.models import Permission, Group
 from marshmallow import Schema, fields, ValidationError, INCLUDE, validate
+from django.contrib.auth.decorators import user_passes_test
 
+
+def is_superuser(user):
+    x = False
+    if user.is_superuser == 1:
+        x = True
+    return x
 
 # validation
 class GroupSchema(Schema):
     name = fields.String(required=True, validate=validate.Length(min=1, max=255))
 
-
+@user_passes_test(is_superuser)
 def index(request):
     groups = Group.objects.order_by("-id").filter()
     return render(request, "cms/pages/group/index.html", {"groups": groups})
 
-
+@user_passes_test(is_superuser)
 def create(request):
     if request.method == "POST":
         try:
@@ -36,7 +43,7 @@ def create(request):
     permissions = Permission.objects.all()
     return render(request, "cms/pages/group/create.html", {"permissions": permissions})
 
-
+@user_passes_test(is_superuser)
 def update(request, id):
     if request.method == "POST":
         try:
@@ -67,7 +74,7 @@ def update(request, id):
         {"permissions": permissions, "group": group, "permissionIds": permissionIds},
     )
 
-
+@user_passes_test(is_superuser)
 def delete(request):
     if request.method == "POST":
         try:

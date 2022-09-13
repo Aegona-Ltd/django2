@@ -4,6 +4,15 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.contrib.auth.models import Permission, Group, User
 from marshmallow import Schema, fields, ValidationError, INCLUDE, validate
+from django.contrib.auth.decorators import user_passes_test
+
+
+def is_superuser(user):
+    x = False
+    if user.is_superuser == 1:
+        x = True
+    return x
+
 
 # validation
 class AdminSchema(Schema):
@@ -12,11 +21,12 @@ class AdminSchema(Schema):
     name = fields.String(required=True, validate=validate.Length(min=1, max=255))
 
 
+@user_passes_test(is_superuser)
 def index(request):
     admins = User.objects.order_by("-id").filter(~Q(is_superuser=1))
     return render(request, "cms/pages/admin/index.html", {"admins": admins})
 
-
+@user_passes_test(is_superuser)
 def create(request):
     if request.method == "POST":
         try:
@@ -55,7 +65,7 @@ def create(request):
         {"permissions": permissions, "groups": groups},
     )
 
-
+@user_passes_test(is_superuser)
 def update(request, id):
     if request.method == "POST":
         try:
@@ -76,7 +86,7 @@ def update(request, id):
 
         admin.username = request.POST["username"]
         admin.first_name = request.POST["name"]
-        if request.POST.get("password",None):
+        if request.POST.get("password", None):
             admin.set_password(request.POST["password"])
         admin.save()
 
@@ -110,7 +120,7 @@ def update(request, id):
         },
     )
 
-
+@user_passes_test(is_superuser)
 def delete(request):
     if request.method == "POST":
         try:

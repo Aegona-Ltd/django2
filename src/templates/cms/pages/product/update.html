@@ -1,0 +1,117 @@
+{% extends "cms/partials/layout.html" %} {% block content %}
+<h1>Product</h1>
+<section id="multiple-column-form">
+    <div class="row match-height">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Update</h4>
+                </div>
+                <div class="card-content">
+                    <div class="card-body">
+                        <form class="form" id="form">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="first-name-column">Category</label>
+                                        <select class="form-control" name="product_category_id">
+                                            {% for productCategory in productCategories %}
+                                            <option
+                                                {% if product.product_category_id == productCategory.id %}selected{% endif %}
+                                                value="{{productCategory.id}}">{{productCategory.name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="first-name-column">Image</label>
+                                        <input type="file" class="form-control" name="image" />
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="first-name-column">Name</label>
+                                        <input type="text" class="form-control" name="name" value="{{product.name}}" />
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="first-name-column">Description</label>
+                                        <input type="text" class="form-control" name="description"
+                                            value="{{product.description}}" />
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="first-name-column">Price</label>
+                                        <input type="number" class="form-control" name="price"
+                                            value="{{product.price}}" />
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="first-name-column">Active</label>
+                                        <select class="form-control" name="is_active">
+                                            <option {% if product.is_active == 1 %}selected{% endif %} value="1">Active</option>
+                                            <option {% if product.is_active == 0 %}selected{% endif %} value="0">Unactive</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12 d-flex justify-content-start mt-3">
+                                    <button type="submit" class="btn btn-primary me-1 mb-1">
+                                        Submit
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block js %}
+
+<script>
+    $(document).on('submit', '#form', function () {
+        var formData = new FormData()
+
+        formData.append('csrfmiddlewaretoken', $('[name="csrfmiddlewaretoken"]').val() || "")
+
+        $('#form').find('input,textarea,select').each(function (i) {
+            if ($(this).attr('type') == 'file') {
+                formData.append($(this).attr('name'), $(this)[0].files[0] || "")
+            } else {
+                formData.append($(this).attr('name'), $(this).val() || "")
+            }
+        })
+
+        $.ajax({
+            url: '',
+            data: formData,
+            processData: false,
+            contentType: false,
+            type: 'POST',
+            success: function (data) {
+                console.log(data)
+                alert('Successfully')
+                window.location.href = window.location.href
+            },
+            error: function (data, textStatus, jqXHR) {
+                var errors = data.responseJSON.errors
+                console.log(errors)
+                var message = ""
+
+                for (const property in errors) {
+                    message += (property + ": " + errors[property][0] + "\r\n")
+                }
+
+                alert(message);
+            },
+        });
+        return false
+    })
+</script>
+{% endblock %}

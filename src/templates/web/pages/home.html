@@ -1,131 +1,165 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Document</title>
-        <style>
-            .container {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                flex-direction: column;
-                gap: 1vw;
-                min-height: 90vh;
-            }
-            label {
-                display: block;
-            }
-            form {
-                display: flex;
-                flex-direction: column;
-                gap: 0.5vw;
-            }
-            input {
-                width: 20vw;
-                height: 2vw;
-            }
-            textarea {
-                width: 20vw;
-                height: 5vw;
-            }
-            button {
-                width: 20.4vw;
-                height: 2vw;
-            }
-        </style>
-    </head>
-    <body>{% csrf_token %}
-        <div class="container">
-            <h2>Contact form</h2>
-            <form action="" id="form">
-                <div>
-                    <label for="">Fullname</label>
-                    <input type="text" name="fullname" />
-                </div>
-                <div>
-                    <label for="">Email</label>
-                    <input type="email" name="email" />
-                </div>
-                <div>
-                    <label for="">Phone</label>
-                    <input type="number" name="phone" />
-                </div>
-                <div>
-                    <label for="">Subject</label>
-                    <input type="text" name="subject" />
-                </div>
-                <div>
-                    <label for="">Message</label>
-                    <textarea
-                        name="message"
-                        id=""
-                        cols="30"
-                        rows="50"
-                    ></textarea>
-                </div>
-                <div>
-                    <button>Submit</button>
-                </div>
-            </form>
+{% extends "web/partials/layout.html" %}
+{% load helpers %}
+{% load static %}
+{% block css %}
+<style>
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 1vw;
+        min-height: 90vh;
+        padding: 5vw;
+    }
+
+    label {
+        display: block;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5vw;
+    }
+
+    input {
+        width: 20vw;
+        height: 2vw;
+    }
+
+    textarea {
+        width: 20vw;
+        height: 5vw;
+    }
+
+    button {
+        width: 20.4vw;
+        height: 2vw;
+    }
+
+    .list-product {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        gap: 3vw;
+    }
+
+    .product {
+        min-height: 10vw;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+        padding: 1vw;
+        text-decoration: none;
+        color: inherit;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    {% for productCategory in productCategories %}
+    <h1>{{productCategory.name}}</h1>
+    <div class="list-product">
+        {% for product in productCategory.product_set.all %}
+        {% if product.is_active == 1 %}
+        <a href="{% url 'web:productDetail' product.name|slug product.id %}" class="product">
+            <div>
+                <img src="{% if product.image %}{% static "uploads/images/" %}{{product.image }}{% else %}{% static "product.jpg" %}{% endif %}"
+                    alt="" width="100%">
+            </div>
+            <h4>{{product.name}}</h4>
+            <div>{{product.description}}</div>
+            <br />
+            <div>
+                <b>{{product.price | formatCurrency}} VNĐ</b>
+            </div>
+        </a>
+        {% endif %}
+        {% endfor %}
+    </div>
+    {% endfor %}
+    <hr>
+    <h2>Contact form</h2>
+    <form action="" id="form">
+        <div>
+            <label for="">Fullname</label>
+            <input type="text" name="fullname" />
         </div>
-        <script src="https://code.jquery.com/jquery-3.6.1.js"
-        integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
-        <script>
-            $(document).ready(function () {
-                $(".js-example-basic-multiple").select2();
+        <div>
+            <label for="">Email</label>
+            <input type="email" name="email" />
+        </div>
+        <div>
+            <label for="">Phone</label>
+            <input type="number" name="phone" />
+        </div>
+        <div>
+            <label for="">Subject</label>
+            <input type="text" name="subject" />
+        </div>
+        <div>
+            <label for="">Message</label>
+            <textarea name="message" id="" cols="30" rows="50"></textarea>
+        </div>
+        <div>
+            <button>Submit</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    $(document).ready(function () {
+        $(".js-example-basic-multiple").select2();
+    });
+    $(document).on("submit", "#form", function () {
+        var formData = new FormData();
+
+        formData.append(
+            "csrfmiddlewaretoken",
+            $('[name="csrfmiddlewaretoken"]').val() || ""
+        );
+
+        $("#form")
+            .find("input,textarea,select")
+            .each(function (i) {
+                if ($(this).attr("type") == "file") {
+                    formData.append(
+                        $(this).attr("name"),
+                        $(this)[0].files[0] || ""
+                    );
+                } else {
+                    formData.append(
+                        $(this).attr("name"),
+                        $(this).val() || ""
+                    );
+                }
             });
-            $(document).on("submit", "#form", function () {
-                var formData = new FormData();
 
-                formData.append(
-                    "csrfmiddlewaretoken",
-                    $('[name="csrfmiddlewaretoken"]').val() || ""
-                );
+        $.ajax({
+            url: "",
+            data: formData,
+            processData: false,
+            contentType: false,
+            type: "POST",
+            success: function (data) {
+                console.log(data);
+                alert("Successfully");
+                window.location.href = window.location.href;
+            },
+            error: function (data, textStatus, jqXHR) {
+                var errors = data.responseJSON.errors;
+                console.log(errors);
+                var message = "";
 
-                $("#form")
-                    .find("input,textarea,select")
-                    .each(function (i) {
-                        if ($(this).attr("type") == "file") {
-                            formData.append(
-                                $(this).attr("name"),
-                                $(this)[0].files[0] || ""
-                            );
-                        } else {
-                            formData.append(
-                                $(this).attr("name"),
-                                $(this).val() || ""
-                            );
-                        }
-                    });
+                for (const property in errors) {
+                    message +=
+                        property + ": " + errors[property][0] + "\r\n";
+                }
 
-                $.ajax({
-                    url: "",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    type: "POST",
-                    success: function (data) {
-                        console.log(data);
-                        alert("Successfully");
-                        window.location.href = window.location.href;
-                    },
-                    error: function (data, textStatus, jqXHR) {
-                        var errors = data.responseJSON.errors;
-                        console.log(errors);
-                        var message = "";
-
-                        for (const property in errors) {
-                            message +=
-                                property + ": " + errors[property][0] + "\r\n";
-                        }
-
-                        alert(message);
-                    },
-                });
-                return false;
-            });
-        </script>
-    </body>
-</html>
+                alert(message);
+            },
+        });
+        return false;
+    });
+</script>
+{% endblock %}

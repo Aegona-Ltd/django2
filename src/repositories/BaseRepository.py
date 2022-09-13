@@ -19,13 +19,16 @@ class BaseRepository:
         object.save()
         return object
 
-    def update(self, object, **kwargs):
-        object.update(**kwargs)
+    def update(self, *args, **kwargs):
+        object = self.model.objects.filter(*args).first()
+        for attr in kwargs.keys():
+            setattr(object, attr, kwargs.get(attr))
         object.save()
         return object
 
-    def delete(self, object):
+    def delete(self, **kwargs):
         try:
+            object = self.model.objects.filter(**kwargs).first()
             object.delete()
             return object
         except:
@@ -33,3 +36,10 @@ class BaseRepository:
 
     def getAllOrderByIdDesc(self):
         return self.model.objects.order_by("-id").all()
+
+    def deleteAll(self):
+        return self.model.objects.all().delete()
+
+    def bulkCreate(self, listObject):
+        return self.model.objects.bulk_create(listObject)
+

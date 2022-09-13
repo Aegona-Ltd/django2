@@ -1,0 +1,65 @@
+{% load helpers %}
+{% load web %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shop</title>
+    <style>
+        .header {
+            padding: 1vw 20vw;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 2vw
+        }
+
+        .header .cart {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1vw
+        }
+
+        a{
+            text-decoration:none;
+            color: initial;
+        }
+    </style>
+    {% block css %}{% endblock %}
+</head>
+
+<body>{% csrf_token %}
+    <div class="header">
+        <div class="links">
+            <a href="{% url 'web:home' %}" class="link">
+                SHOP
+            </a>
+        </div>
+        <a href="{% url "web:cart" %}" class="cart">
+            <img src="https://elearning.aimacademy.vn/images/header-cart.svg" alt="">
+            (<span class="js-cartquantityProduct">{% renderCartQuantity request %}</span>&nbsp;sản phẩm)
+        </a>
+    </div>
+    {% block content %}{% endblock %}
+    <script src="https://code.jquery.com/jquery-3.6.1.js"
+        integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+    <script>
+        function setCartQuantityProduct(cart) {
+            count = 0
+            console.log(cart)
+            cart.forEach(e => {
+                count += e.quantity
+            })
+            $(".js-cartquantityProduct").html(count)
+        }
+    </script>
+    {% block js %}{% endblock %}
+</body>
+
+</html>

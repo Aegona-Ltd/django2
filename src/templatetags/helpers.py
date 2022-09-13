@@ -1,6 +1,8 @@
 import datetime
 import locale
 from django import template
+from django.contrib.humanize.templatetags.humanize import intcomma
+from django.template.defaultfilters import slugify
 
 register = template.Library()
 
@@ -46,3 +48,12 @@ def getByKey(data, key):
 def getByIndex(data, index):
     return data[index]
 
+
+@register.filter
+def formatCurrency(value):
+    value = round(float(value), 2)
+    return "%s" % (intcomma(int(value)))
+
+@register.filter
+def slug(value):
+    return slugify(value)
