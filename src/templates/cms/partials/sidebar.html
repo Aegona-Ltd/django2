@@ -49,6 +49,24 @@
                         <span>Product shopify</span>
                     </a>
                 </li>
+                <li class="sidebar-item {% if 'order.' in request.resolver_match.url_name  %}active{% endif %}">
+                    <a href="{% url 'cms:order.index' %}" class="sidebar-link">
+                        <i class="bi bi-grid-fill"></i>
+                        <span>Order</span>
+                    </a>
+                </li>
+{% comment %} 
+                <li class="sidebar-item has-sub {% if 'priceRule.' in request.resolver_match.url_name  %}active{% endif %}">
+                    <a href="#" class="sidebar-link">
+                        <i class="bi bi-stack"></i>
+                        <span>Discount</span>
+                    </a>
+                    <ul class="submenu {% if 'priceRule.' in request.resolver_match.url_name  %}active{% endif %}">
+                        <li class="submenu-item {% if 'priceRule.' in request.resolver_match.url_name  %}active{% endif %}">
+                            <a href="{% url 'cms:priceRule.index' %}">Price rule</a>
+                        </li>
+                    </ul>
+                </li> {% endcomment %}
 
                 <li class="sidebar-item {% if "admin." in request.resolver_match.url_name  %}active{% endif %}">
                     <a href="{% url 'cms:admin.index' %}" class="sidebar-link">
@@ -65,17 +83,7 @@
                     </a>
                 </li>
 
-                {% comment %} <li class="sidebar-item has-sub">
-                    <a href="#" class="sidebar-link">
-                        <i class="bi bi-stack"></i>
-                        <span>Components</span>
-                    </a>
-                    <ul class="submenu">
-                        <li class="submenu-item">
-                            <a href="component-alert.html">Alert</a>
-                        </li>
-                    </ul>
-                </li> {% endcomment %}
+
             </ul>
         </div>
         <button class="sidebar-toggler btn x">

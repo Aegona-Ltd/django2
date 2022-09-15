@@ -7,7 +7,8 @@ from src.views.cms import (
     contact,
     productCategory,
     product,
-    productShopify
+    productShopify,
+    order
 )
 
 app_name = "cms"
@@ -59,4 +60,7 @@ urlpatterns = [
 
     path("product-shopify", productShopify.index, name="productShopify.index"),
     path("product-shopify/sync", productShopify.sync, name="productShopify.sync"),
+    path("order", order.index, name="order.index"),
+    path("order/change-status", order.changeStatus, name="order.changeStatus"),
+    path("order/paid", order.paid, name="order.paid"),
 ]

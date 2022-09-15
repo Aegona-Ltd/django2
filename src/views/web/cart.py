@@ -110,9 +110,12 @@ def order(request):
                     "zip": request.POST.get("zip"),
                 },
                 "email": request.POST.get("email"),
+                # "transactions": [{"kind": "sale", "status": "success", "amount": 50.0}],
                 "financial_status": "pending",
+                # "discount_codes": [{"code": request.POST.get("discountCode",""), "amount": "10.00", "type": "percentage" }],
             }
         },
     )
+    response.raise_for_status()
 
     return JsonResponse(request.POST)

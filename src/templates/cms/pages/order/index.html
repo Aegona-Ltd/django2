@@ -1,0 +1,64 @@
+{% extends "cms/partials/layout.html" %} {% block content %}
+{% load helpers %}
+<h1>Order</h1>
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">Index</h4>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped" id="table1">
+            <thead>
+                <tr>
+                    <th>Order name</th>
+                    <th>Order ID</th>
+                    <th>Email</th>
+                    <th>Payment status</th>
+                    <th>Fulfillment status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for x in orders %}
+                <tr>
+                    <td>{{x.name}}</td>
+                    <td>{{x.id}}</td>
+                    <td>{{x.email}}</td>
+                    <td class="payment-status" >{{x.financial_status}}</td>
+                    <td class="fulfillment-status">{{x.fulfillment_status}}</td>
+                    <td> <button class="paid btn btn-sm btn-success" data-order_id="{{x.id}}" >Fulfill</button> </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    $(document).on('click', '.paid', function () {
+        if (confirm('Are you sure?')) {
+            var formData = new FormData()
+            formData.append(
+                "csrfmiddlewaretoken",
+                $('[name="csrfmiddlewaretoken"]').val() || ""
+            );
+            formData.append('order_id', $(this).data('order_id'))
+            var element = $(this).parents("tr").find(".fulfillment-status")
+            $.ajax({
+                url: "{% url 'cms:order.changeStatus'  %}",
+                data: formData,
+                processData: false,
+                contentType: false,
+                type: 'POST',
+                success: function (data) {
+                    element.html("fulfilled")
+                },
+                error: function (data, textStatus, jqXHR) {
+                    alert('Không thể xoá nội dung này')
+                },
+            });
+            return false
+        }
+    })
+</script>
+{% endblock %}
